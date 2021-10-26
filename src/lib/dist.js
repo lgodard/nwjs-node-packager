@@ -13,7 +13,7 @@ const NJWS_LOCALES = [
     'en-GB'
 ];
 
-async function create_dist(nwjs_dir, source_dir, target_dir) {
+async function create_dist(nwjs_dir, source_dir, target_dir, platform_os) {
 
     // clean
     const dist_dir_exists = await fs.pathExists(path.resolve(target_dir));
@@ -27,24 +27,27 @@ async function create_dist(nwjs_dir, source_dir, target_dir) {
     await fs.copy(nwjs_dir, target_dir);
 
     // remove useless locales
-    const promises = [];
+    if (platform_os !== 'osx') { // TODO: clean locales for osx
 
-    const selected_locales = NJWS_LOCALES.map((locale) => {
-        return locale + '*';
-    });
+        const promises = [];
 
-    await filehound.create()
-        .paths(path.join(target_dir, 'locales'))
-        .not()
-        .match(selected_locales)
-        .find()
-        .then((files) => {
-            files.forEach((file) => {
-                promises.push([
-                    fs.remove(file)
-                ]);
-            });
+        const selected_locales = NJWS_LOCALES.map((locale) => {
+            return locale + '*';
         });
+
+        await filehound.create()
+            .paths(path.join(target_dir, 'locales'))
+            .not()
+            .match(selected_locales)
+            .find()
+            .then((files) => {
+                files.forEach((file) => {
+                    promises.push([
+                        fs.remove(file)
+                    ]);
+                });
+            });
+    }
 
     // merge source
     await fs.copy(source_dir, path.join(target_dir, 'app'));

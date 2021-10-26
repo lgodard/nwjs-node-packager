@@ -86,7 +86,7 @@ async function run(params) {
     // merge app source & nwjs binaries
     messages.title('[Create distribuable app]');
 
-    await dist.create_dist(nwjs_dir, params.source_dir, params.target_dir);
+    await dist.create_dist(nwjs_dir, params.source_dir, params.target_dir, params.platform.os);
 
     messages.info('==> Application available at ' + params.target_dir);
 
@@ -95,11 +95,14 @@ async function run(params) {
 
         messages.title('[Protect source with V8 snapshot]');
 
-        const nwjs_sdk_dir = await downloader.getNwjsSdk(params);
+        if (params.platform.os == 'osx') {
+            messages.warning('\t--> ABORT not availaible for OSX');
 
-        await protect.setBin(params, nwjs_sdk_dir);
-
-        messages.info('==> Application now uses V8 snapshot');
+        } else {
+            const nwjs_sdk_dir = await downloader.getNwjsSdk(params);
+            await protect.setBin(params, nwjs_sdk_dir);
+            messages.info('==> Application now uses V8 snapshot');
+        }
     }
 
     // create installer
