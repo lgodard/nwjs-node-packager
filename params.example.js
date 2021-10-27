@@ -48,6 +48,11 @@ const PLATFORMS = [
     {
         os: 'linux',
         arch: 'x64'
+    },
+    // MacOs
+    {
+        os: 'osx',
+        arch: 'x64'
     }
 ];
 
