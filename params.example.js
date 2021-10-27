@@ -13,7 +13,7 @@ const COMMON = {
     nwjs_url: 'http://dl.nwjs.io',
     // clean working_dir to force NWJS binaries download
     force_nwjs_download: false,
-    // nwjs locales to distributed
+    // nwjs locales to be distributed
     nwjs_locales: ['fr', 'en-GB', 'en-US'],
     // replaces the app script with a binary V8 snapshot
     protect_script: true,

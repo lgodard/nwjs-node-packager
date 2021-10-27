@@ -32,6 +32,8 @@ const COMMON = {
     nwjs_url: 'http://dl.nwjs.io',
     // clean working_dir to force NW.js binaries download
     force_nwjs_download: false,
+    // nwjs locales to be distributed
+    nwjs_locales: ['fr', 'en-GB', 'en-US'],
     // replaces the app script with a binary V8 snapshot
     protect_script: true,
     // the html file loading the app script
@@ -57,7 +59,8 @@ const PLATFORMS = [
             description: 'Application description for the installer',
             licence: 'MIT',
             win_ico_path: '',
-            user_install: true // local installation - no need of admin rights for installer
+            user_install: true, // local installation - no need of admin rights for installer
+            language: 'French'
         }
     },
     // Linux
