@@ -51,6 +51,10 @@ async function create(params) {
     regexp = RegExp(/NWJS_APP_REPLACE_TARGET_WIN_DIR/g);
     nsis = nsis.replace(regexp, target_win_dir);
 
+    const language = params.platform.installer.language || 'English';
+    regexp = RegExp(/NWJS_APP_REPLACE_INSTALL_LANGUAGE/g);
+    nsis = nsis.replace(regexp, language);
+
     // save nsis
     const nsis_filename = `${params.platform.os}-${params.platform.arch}.nsi`;
     const nsis_path = path.resolve(path.join(params.output_dir), nsis_filename);

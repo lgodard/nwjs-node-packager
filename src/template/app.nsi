@@ -11,7 +11,6 @@ OutFile "NWJS_APP_REPLACE_EXE_NAME"
 
 ;;; Modern interface settings
 !include "MUI.nsh"
-;;!define MUI_ICON "NWJS_APP_REPLACE_INC_FILE_ICO"
 !define MUI_ABORTWARNING
 
 ;; Launch when finished
@@ -19,7 +18,6 @@ OutFile "NWJS_APP_REPLACE_EXE_NAME"
 !define MUI_FINISHPAGE_RUN_PARAMETERS "app"
 
 !insertmacro MUI_PAGE_WELCOME
-;;!insertmacro MUI_PAGE_LICENSE "NWJS_APP_REPLACE_LICENSE"
 !insertmacro MUI_PAGE_DIRECTORY
 !insertmacro MUI_PAGE_INSTFILES
 !insertmacro MUI_PAGE_FINISH
@@ -28,7 +26,7 @@ OutFile "NWJS_APP_REPLACE_EXE_NAME"
 !insertmacro MUI_UNPAGE_INSTFILES
 
 ;;; Set languages (first is default language)
-!insertmacro MUI_LANGUAGE "French"
+!insertmacro MUI_LANGUAGE "NWJS_APP_REPLACE_INSTALL_LANGUAGE"
 !insertmacro MUI_RESERVEFILE_LANGDLL
 
 Section "${APPNAME}" Section1
@@ -40,7 +38,6 @@ Section "${APPNAME}" Section1
 	SetOutPath "$INSTDIR\"
 	File /r "NWJS_APP_REPLACE_SOURCE_DIRECTORY/*"
 
-;;	CreateShortCut "$DESKTOP\${APPNAME}.lnk" "$INSTDIR\${APPNAME}.exe" "" $INSTDIR\NWJS_APP_REPLACE_ICO_FILE_NAME" 0
 	CreateShortCut "$DESKTOP\${APPNAME}.lnk" "$INSTDIR\nw.exe" "app" "" 0
 	CreateDirectory "$SMPROGRAMS\${APPNAME}"
 	CreateShortCut "$SMPROGRAMS\${APPNAME}\${APPNAME}.lnk" "$INSTDIR\nw.exe" "app" "" 0

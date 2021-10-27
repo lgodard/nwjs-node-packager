@@ -40,7 +40,8 @@ const PLATFORMS = [
             description: 'Application description for the installer',
             licence: 'MIT',
             win_ico_path: '',
-            user_install: true // local installation - no need of admin rights for installer
+            user_install: true, // local installation - no need of admin rights for installer
+            language: 'French'
         }
     },
     // linux
