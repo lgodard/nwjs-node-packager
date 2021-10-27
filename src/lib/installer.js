@@ -8,7 +8,7 @@ const messages = require('./messages');
 
 async function create(params) {
 
-    const nsis_template_filename = params.platform.installer.user_install ? '../template/app_user.nsi' : '../template/app.nsi';
+    const nsis_template_filename = '../template/app.nsi';
 
     // loads nsis template
     const nsis_template = await fs.readFile(path.resolve(path.join(__dirname, nsis_template_filename)), 'utf8');
@@ -36,8 +36,20 @@ async function create(params) {
     regexp = RegExp(/NWJS_APP_REPLACE_INC_FILE_ICO/g);
     nsis = nsis.replace(regexp, params.platform.installer.win_ico_path);
 
-    regexp = RegExp(/NWJS_APP_SOURCE_DIRECTORY/g);
+    regexp = RegExp(/NWJS_APP_REPLACE_SOURCE_DIRECTORY/g);
     nsis = nsis.replace(regexp, params.target_dir);
+
+    const user_level = params.platform.installer.user_install ? 'RequestExecutionLevel user' : '';
+    regexp = RegExp(/NWJS_APP_REPLACE_USER_LEVEL/g);
+    nsis = nsis.replace(regexp, user_level);
+
+    const registry_target = params.platform.installer.user_install ? 'HKCU' : 'HKLM';
+    regexp = RegExp(/NWJS_APP_REPLACE_REGISTRY/g);
+    nsis = nsis.replace(regexp, registry_target);
+
+    const target_win_dir = params.platform.installer.user_install ? '$LOCALAPPDATA' : '$APPDATA';
+    regexp = RegExp(/NWJS_APP_REPLACE_TARGET_WIN_DIR/g);
+    nsis = nsis.replace(regexp, target_win_dir);
 
     // save nsis
     const nsis_filename = `${params.platform.os}-${params.platform.arch}.nsi`;

@@ -3,9 +3,10 @@
 !define APPNAMEANDVERSION "${APPNAME} NWJS_APP_REPLACE_VERSION"
 
 ;;; Main Install settings
+NWJS_APP_REPLACE_USER_LEVEL
 Name "${APPNAMEANDVERSION}"
-InstallDir "$APPDATA\${APPNAME}"
-InstallDirRegKey HKLM "Software\${APPNAME}" ""
+InstallDir "NWJS_APP_REPLACE_TARGET_WIN_DIR\${APPNAME}"
+InstallDirRegKey NWJS_APP_REPLACE_REGISTRY "Software\${APPNAME}" ""
 OutFile "NWJS_APP_REPLACE_EXE_NAME"
 
 ;;; Modern interface settings
@@ -37,7 +38,7 @@ Section "${APPNAME}" Section1
 
 	;;; Set Section Files and Shortcuts
 	SetOutPath "$INSTDIR\"
-	File /r "NWJS_APP_SOURCE_DIRECTORY/*"
+	File /r "NWJS_APP_REPLACE_SOURCE_DIRECTORY/*"
 
 ;;	CreateShortCut "$DESKTOP\${APPNAME}.lnk" "$INSTDIR\${APPNAME}.exe" "" $INSTDIR\NWJS_APP_REPLACE_ICO_FILE_NAME" 0
 	CreateShortCut "$DESKTOP\${APPNAME}.lnk" "$INSTDIR\nw.exe" "app" "" 0
@@ -49,9 +50,9 @@ SectionEnd
 
 Section -FinishSection
 
-	WriteRegStr HKLM "Software\${APPNAME}" "" "$INSTDIR"
-	WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${APPNAME}" "DisplayName" "${APPNAME}"
-	WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${APPNAME}" "UninstallString" "$INSTDIR\uninstall.exe"
+	WriteRegStr NWJS_APP_REPLACE_REGISTRY "Software\${APPNAME}" "" "$INSTDIR"
+	WriteRegStr NWJS_APP_REPLACE_REGISTRY "Software\Microsoft\Windows\CurrentVersion\Uninstall\${APPNAME}" "DisplayName" "${APPNAME}"
+	WriteRegStr NWJS_APP_REPLACE_REGISTRY "Software\Microsoft\Windows\CurrentVersion\Uninstall\${APPNAME}" "UninstallString" "$INSTDIR\uninstall.exe"
 	WriteUninstaller "$INSTDIR\uninstall.exe"
 
 SectionEnd
@@ -65,8 +66,8 @@ SectionEnd
 Section Uninstall
 
 	;;; Remove from registry...
-	DeleteRegKey HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${APPNAME}"
-	DeleteRegKey HKLM "SOFTWARE\${APPNAME}"
+	DeleteRegKey NWJS_APP_REPLACE_REGISTRY "Software\Microsoft\Windows\CurrentVersion\Uninstall\${APPNAME}"
+	DeleteRegKey NWJS_APP_REPLACE_REGISTRY "SOFTWARE\${APPNAME}"
 
 	;;; Delete self
 	Delete "$INSTDIR\uninstall.exe"
