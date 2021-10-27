@@ -48,7 +48,7 @@ async function create(params) {
     messages.work('* Create installer');
     const nsis_output = await makensis.compile(nsis_path);
     if (nsis_output.status != 0) {
-        messages.error('nsis_output ' + nsis_output);
+        messages.error('nsis_output ' + JSON.stringify(nsis_output));
     } else {
         messages.info('==> Installer available at ' + path.resolve(path.join(params.output_dir), exe_name));
     }

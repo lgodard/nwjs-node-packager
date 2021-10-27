@@ -13,7 +13,10 @@ OutFile "NWJS_APP_REPLACE_EXE_NAME"
 !include "MUI.nsh"
 ;;!define MUI_ICON "NWJS_APP_REPLACE_INC_FILE_ICO"
 !define MUI_ABORTWARNING
-!define MUI_FINISHPAGE_RUN "$INSTDIR\nw.exe app"
+
+;; Launch when finished
+!define MUI_FINISHPAGE_RUN $INSTDIR\nw.exe
+!define MUI_FINISHPAGE_RUN_PARAMETERS "app"
 
 !insertmacro MUI_PAGE_WELCOME
 ;;!insertmacro MUI_PAGE_LICENSE "NWJS_APP_REPLACE_LICENSE"
