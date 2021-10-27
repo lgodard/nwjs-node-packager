@@ -7,13 +7,7 @@ const filehound = require('filehound');
 
 const utils = require('./utils');
 
-const NJWS_LOCALES = [
-    'fr',
-    'en-US',
-    'en-GB'
-];
-
-async function create_dist(nwjs_dir, source_dir, target_dir, platform_os) {
+async function create_dist(nwjs_dir, source_dir, target_dir, platform_os, nwjs_locales) {
 
     // clean
     const dist_dir_exists = await fs.pathExists(path.resolve(target_dir));
@@ -31,7 +25,11 @@ async function create_dist(nwjs_dir, source_dir, target_dir, platform_os) {
 
         const promises = [];
 
-        const selected_locales = NJWS_LOCALES.map((locale) => {
+        if (!nwjs_locales) {
+            nwjs_locales = [];
+        }
+
+        const selected_locales = nwjs_locales.map((locale) => {
             return locale + '*';
         });
 

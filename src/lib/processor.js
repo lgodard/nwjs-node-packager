@@ -86,7 +86,7 @@ async function run(params) {
     // merge app source & nwjs binaries
     messages.title('[Create distribuable app]');
 
-    await dist.create_dist(nwjs_dir, params.source_dir, params.target_dir, params.platform.os);
+    await dist.create_dist(nwjs_dir, params.source_dir, params.target_dir, params.platform.os, params.nwjs_locales);
 
     messages.info('==> Application available at ' + params.target_dir);
 
