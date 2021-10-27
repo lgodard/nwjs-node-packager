@@ -1,7 +1,7 @@
 {
   "name": "nwjs-node-packager",
   "description": "Nodejs script for building & packaging a NXWS app",
-  "version": "0.0.1",
+  "version": "1.0.3",
   "author": "Laurent Godard",
   "license": "MIT",
   "engines": {
