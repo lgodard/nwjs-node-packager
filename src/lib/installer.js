@@ -30,11 +30,8 @@ async function create(params) {
     const exe_name = `Setup-${params.platform.installer.app_name}-${params.platform.installer.app_version}_${params.platform.arch}.exe`;
     nsis = nsis.replace(regexp, exe_name);
 
-    regexp = RegExp(/NWJS_APP_REPLACE_ICO_FILE_NAME/g);
-    nsis = nsis.replace(regexp, path.basename(params.platform.installer.win_ico_path));
-
     regexp = RegExp(/NWJS_APP_REPLACE_INC_FILE_ICO/g);
-    nsis = nsis.replace(regexp, params.platform.installer.win_ico_path);
+    nsis = nsis.replace(regexp, params.platform.installer.win_ico_filename);
 
     regexp = RegExp(/NWJS_APP_REPLACE_SOURCE_DIRECTORY/g);
     nsis = nsis.replace(regexp, params.target_dir);

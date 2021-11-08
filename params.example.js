@@ -39,7 +39,7 @@ const PLATFORMS = [
             app_version: '0.0.0', // application version
             description: 'Application description for the installer',
             licence: 'MIT',
-            win_ico_path: '',
+            win_ico_filename: '', // must be in source_dir
             user_install: true, // local installation - no need of admin rights for installer
             language: 'French'
         }

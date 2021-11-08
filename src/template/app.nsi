@@ -38,9 +38,9 @@ Section "${APPNAME}" Section1
 	SetOutPath "$INSTDIR\"
 	File /r "NWJS_APP_REPLACE_SOURCE_DIRECTORY/*"
 
-	CreateShortCut "$DESKTOP\${APPNAME}.lnk" "$INSTDIR\nw.exe" "app" "" 0
+	CreateShortCut "$DESKTOP\${APPNAME}.lnk" "$INSTDIR\nw.exe" "app" "$INSTDIR\app\NWJS_APP_REPLACE_INC_FILE_ICO"
 	CreateDirectory "$SMPROGRAMS\${APPNAME}"
-	CreateShortCut "$SMPROGRAMS\${APPNAME}\${APPNAME}.lnk" "$INSTDIR\nw.exe" "app" "" 0
+	CreateShortCut "$SMPROGRAMS\${APPNAME}\${APPNAME}.lnk" "$INSTDIR\nw.exe" "app" "$INSTDIR\app\NWJS_APP_REPLACE_INC_FILE_ICO"
 	CreateShortCut "$SMPROGRAMS\${APPNAME}\Uninstall.lnk" "$INSTDIR\uninstall.exe" "" "" 0
 
 SectionEnd
