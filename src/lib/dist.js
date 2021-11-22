@@ -7,36 +7,36 @@ const filehound = require('filehound');
 
 const utils = require('./utils');
 
-async function create_dist(nwjs_dir, source_dir, target_dir, platform_os, nwjs_locales) {
+async function create_dist(nwjs_dir, params) {
 
     // clean
-    const dist_dir_exists = await fs.pathExists(path.resolve(target_dir));
+    const dist_dir_exists = await fs.pathExists(path.resolve(params.target_dir));
 
     if (dist_dir_exists) {
-        await utils.clean(path.resolve(target_dir));
+        await utils.clean(path.resolve(params.target_dir));
     } else {
-        await fs.ensureDir(path.resolve(target_dir));
+        await fs.ensureDir(path.resolve(params.target_dir));
     }
 
     // copy nwjs
-    await fs.copy(nwjs_dir, path.resolve(target_dir));
+    await fs.copy(nwjs_dir, path.resolve(params.target_dir));
 
     // remove useless locales
 
     const promises = [];
 
-    if (!nwjs_locales) {
-        nwjs_locales = [];
+    if (!params.nwjs_locales) {
+        params.nwjs_locales = [];
     }
 
-    if (platform_os !== 'osx') {
+    if (params.platform.os !== 'osx') {
 
-        const selected_locales = nwjs_locales.map((locale) => {
+        const selected_locales = params.nwjs_locales.map((locale) => {
             return locale + '*';
         });
 
         await filehound.create()
-            .paths(path.join(path.resolve(target_dir), 'locales'))
+            .paths(path.join(path.resolve(params.target_dir), 'locales'))
             .not()
             .match(selected_locales)
             .find()
@@ -50,14 +50,14 @@ async function create_dist(nwjs_dir, source_dir, target_dir, platform_os, nwjs_l
 
     } else {
 
-        const selected_locales = nwjs_locales.map((locale) => {
+        const selected_locales = params.nwjs_locales.map((locale) => {
             return locale.replace('-', '_') + '.lproj';
         });
         selected_locales.push('base.lproj'); // we keep this anyway
 
         const lproj_paths = [
-            path.join(path.resolve(target_dir), 'nwjs.app', 'Contents', 'Resources'),
-            path.join(path.resolve(target_dir), 'nwjs.app', 'Contents', 'Frameworks', 'nwjs Framework.framework', 'Versions'),
+            path.join(path.resolve(params.target_dir), 'nwjs.app', 'Contents', 'Resources'),
+            path.join(path.resolve(params.target_dir), 'nwjs.app', 'Contents', 'Frameworks', 'nwjs Framework.framework', 'Versions'),
         ];
 
         await filehound.create()
@@ -80,7 +80,38 @@ async function create_dist(nwjs_dir, source_dir, target_dir, platform_os, nwjs_l
     await Promise.all(promises);
 
     // merge source
-    await fs.copy(source_dir, path.join(path.resolve(target_dir), 'app'));
+    const target_app = path.join(path.resolve(params.target_dir), 'app');
+    await fs.copy(params.source_dir, target_app);
+
+    if (params.platform.os == 'osx') {
+
+        const target_app_osx = path.join(path.resolve(params.target_dir), 'nwjs.app', 'Contents', 'Resources', 'app.nw');
+        await fs.move(target_app, target_app_osx);
+
+        // changes according to https://docs.nwjs.io/en/latest/For%20Users/Package%20and%20Distribute/#mac-os-x
+
+        const old_icon = path.join(path.resolve(params.target_dir), 'nwjs.app', 'Contents', 'Resources', 'app.nw', params.platform.installer.osx_ico_filename);
+        const new_icon = path.join(path.resolve(params.target_dir), 'nwjs.app', 'Contents', 'Resources', 'app.icns');
+        await fs.move(old_icon, new_icon, {overwrite: true});
+
+        // plist
+        const plist_path = path.join(path.resolve(params.target_dir), 'nwjs.app', 'Contents', 'Info.plist');
+        let plist_content = await fs.readFile(plist_path, 'utf8');
+        const regexp = RegExp(/<string>nwjs<\/string>/g);
+        plist_content = plist_content.replace(regexp, `<string>${params.platform.installer.app_name}</string>`);
+        await fs.writeFile(plist_path, plist_content, 'utf8');
+
+        // app
+        const app_path = path.join(path.resolve(params.target_dir), 'nwjs.app', 'Contents', 'MacOS');
+        const app_src = path.join(app_path, 'nwjs');
+        const app_target = path.join(app_path, params.platform.installer.app_name);
+        await fs.move(app_src, app_target);
+
+        const root_src_path = path.join(path.resolve(params.target_dir), 'nwjs.app');
+        const root_target_path = path.join(path.resolve(params.target_dir), params.platform.installer.app_name + '.app')
+        await fs.move(root_src_path, root_target_path);
+
+    }
 
 }
 

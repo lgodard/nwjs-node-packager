@@ -73,7 +73,7 @@ async function create_osx(params) {
 
     const script_template_filename = '../template/create_dmg.sh';
 
-    // loads nsis template
+    // loads script template
     const script_template = await fs.readFile(path.resolve(path.join(__dirname, script_template_filename)), 'utf8');
 
     // creates script
