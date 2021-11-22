@@ -1,39 +1,17 @@
 'use strict';
 
-const filehound = require('filehound');
-const fs = require('fs-extra');
+const shell = require('shelljs');
+const messages = require('./messages');
 
-async function clean(target_dir, basename) {
+function clean(target_dir) {
 
-    const promises = [];
+    const cmd = `rm -rf ${target_dir}/*`;
+    const out_rm = shell.exec(cmd, {silent: true});
+    if (out_rm.code != 0) {
+        messages.error('--> ERROR ' + cmd);
+        messages.error(out_rm);
+    }
 
-    await filehound.create()
-        .paths(target_dir)
-        .match(`${basename}*`)
-        .depth(0)
-        .find()
-        .then((files) => {
-            files.forEach((file) => {
-                promises.push([
-                    fs.remove(file)
-                ]);
-            });
-        });
-
-    await filehound.create()
-        .paths(target_dir)
-        .match(`${basename}*`)
-        .directory()
-        .find()
-        .then((dirs) => {
-            dirs.forEach((dir) => {
-                promises.push([
-                    fs.remove(dir)
-                ]);
-            });
-        });
-
-    await Promise.all(promises);
 }
 
 module.exports = {

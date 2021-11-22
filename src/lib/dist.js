@@ -11,14 +11,15 @@ async function create_dist(nwjs_dir, source_dir, target_dir, platform_os, nwjs_l
 
     // clean
     const dist_dir_exists = await fs.pathExists(path.resolve(target_dir));
+
     if (dist_dir_exists) {
-        await utils.clean(target_dir, '');
+        await utils.clean(path.resolve(target_dir));
     } else {
-        await fs.ensureDir(target_dir);
+        await fs.ensureDir(path.resolve(target_dir));
     }
 
     // copy nwjs
-    await fs.copy(nwjs_dir, target_dir);
+    await fs.copy(nwjs_dir, path.resolve(target_dir));
 
     // remove useless locales
 
@@ -35,7 +36,7 @@ async function create_dist(nwjs_dir, source_dir, target_dir, platform_os, nwjs_l
         });
 
         await filehound.create()
-            .paths(path.join(target_dir, 'locales'))
+            .paths(path.join(path.resolve(target_dir), 'locales'))
             .not()
             .match(selected_locales)
             .find()
@@ -55,8 +56,8 @@ async function create_dist(nwjs_dir, source_dir, target_dir, platform_os, nwjs_l
         selected_locales.push('base.lproj'); // we keep this anyway
 
         const lproj_paths = [
-            path.join(target_dir, 'nwjs.app', 'Contents', 'Resources'),
-            path.join(target_dir, 'nwjs.app', 'Contents', 'Frameworks', 'nwjs Framework.framework', 'Versions'),
+            path.join(path.resolve(target_dir), 'nwjs.app', 'Contents', 'Resources'),
+            path.join(path.resolve(target_dir), 'nwjs.app', 'Contents', 'Frameworks', 'nwjs Framework.framework', 'Versions'),
         ];
 
         await filehound.create()
@@ -79,7 +80,7 @@ async function create_dist(nwjs_dir, source_dir, target_dir, platform_os, nwjs_l
     await Promise.all(promises);
 
     // merge source
-    await fs.copy(source_dir, path.join(target_dir, 'app'));
+    await fs.copy(source_dir, path.join(path.resolve(target_dir), 'app'));
 
 }
 
