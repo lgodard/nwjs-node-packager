@@ -52,7 +52,11 @@ const PLATFORMS = [
     // MacOs
     {
         os: 'osx',
-        arch: 'x64'
+        arch: 'x64',
+        installer: {
+            app_name: 'Application_Name', // your application name
+            app_version: '0.0.0', // application version
+        }
     }
 ];
 

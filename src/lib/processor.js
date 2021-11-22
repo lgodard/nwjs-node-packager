@@ -110,12 +110,23 @@ async function run(params) {
 
         messages.title('[Installer]');
 
+        /*
         if (params.platform.os != 'win') {
             messages.error('Only available for windows platform');
         } else {
             // installer
             await installer.create(params);
         }
+         */
+
+        if (params.platform.os == 'win') {
+            await installer.create_win(params);
+        } else if (params.platform.os == 'osx') {
+            await installer.create_osx(params);
+        } else {
+            messages.error('Installer not available for the plateform ' + params.platform.os);
+        }
+
     }
 
     return true;

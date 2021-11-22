@@ -1,12 +1,14 @@
 'use strict';
 const path = require('path');
+const os = require('os');
 
+const shell = require('shelljs');
 const fs = require('fs-extra');
 const makensis = require('makensis');
 
 const messages = require('./messages');
 
-async function create(params) {
+async function create_win(params) {
 
     const nsis_template_filename = '../template/app.nsi';
 
@@ -67,6 +69,59 @@ async function create(params) {
     }
 }
 
+async function create_osx(params) {
+
+    const script_template_filename = '../template/create_dmg.sh';
+
+    // loads nsis template
+    const script_template = await fs.readFile(path.resolve(path.join(__dirname, script_template_filename)), 'utf8');
+
+    // creates script
+    const userInfo = os.userInfo();
+    let regexp = RegExp(/NWJS_DMG_REPLACE_CURRENT_USER/g);
+    let script = script_template.replace(regexp, userInfo.username);
+
+    const out_size = shell.exec(`du -sb ${params.target_dir}`, {silent: true});
+    let size = out_size.split('\t')[0];
+    size = Number(size) / 1024 / 1024; // TO MiB
+    size = 1.05 * size; // TODO: needed security
+    size = Math.ceil(size);
+    regexp = RegExp(/NWJS_DMG_REPLACE_SOURCE_SIZE/g);
+    script = script.replace(regexp, size);
+
+    const dmg_name = `${params.platform.installer.app_name}-${params.platform.installer.app_version}.dmg`;
+    regexp = RegExp(/NWJS_DMG_REPLACE_FILENAME/g);
+    script = script.replace(regexp, dmg_name);
+
+    const volume_name = `${params.platform.installer.app_name} ${params.platform.installer.app_version}`;
+    regexp = RegExp(/NWJS_DMG_REPLACE_VOLUME_NAME/g);
+    script = script.replace(regexp, volume_name);
+
+    const dmg_target_path = path.resolve(path.join(params.output_dir), dmg_name);
+    regexp = RegExp(/NWJS_DMG_REPLACE_TARGET/g);
+    script = script.replace(regexp, dmg_target_path);
+
+    regexp = RegExp(/NWJS_DMG_REPLACE_SOURCE_DIRECTORY/g);
+    script = script.replace(regexp, params.target_dir);
+
+    // save script
+    const script_filename = `${params.platform.os}-${params.platform.arch}-${params.platform.installer.app_version}.sh`;
+    const script_path = path.resolve(path.join(params.output_dir), script_filename);
+    await fs.writeFile(script_path, script, 'utf8');
+
+    // execute script
+    messages.work('* Create installer (need sudo)');
+    shell.exec(`chmod u+x ${script_path}`, {silent: true});
+    const result = shell.exec(`sudo ${script_path}`, {silent: true, fatal: true});
+    if (result.code != 0) {
+        messages.error('\n--> ABORT dmg script error \n' + JSON.stringify(result));
+    } else {
+        messages.info('\n==> Installer available at ' + path.resolve(path.join(params.output_dir), dmg_name));
+    }
+}
+
+
 module.exports = {
-    create
+    create_win,
+    create_osx
 };
