@@ -56,6 +56,7 @@ const PLATFORMS = [
         installer: {
             app_name: 'Application_Name', // your application name
             app_version: '0.0.0', // application version
+            osx_ico_filename: 'app.icns'
         }
     }
 ];

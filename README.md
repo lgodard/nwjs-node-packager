@@ -71,7 +71,12 @@ const PLATFORMS = [
     // MacOs
     {
         os: 'osx',
-        arch: 'x64'
+        arch: 'x64',
+        installer: { // needs sudo
+            app_name: 'Application_Name', // your application name
+            app_version: '0.0.0', // application version
+            osx_ico_filename: 'app.icns'
+        }
     }
 ];
 ```
@@ -79,6 +84,8 @@ const PLATFORMS = [
 If your application uses Webpack, it has to be built separately.
 
 The application will download needed NW.js engines
+
+**Note : OSX installe producing `dmg` file needs `sudo`**
 
 Credits
 ======
