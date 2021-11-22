@@ -21,13 +21,14 @@ async function create_dist(nwjs_dir, source_dir, target_dir, platform_os, nwjs_l
     await fs.copy(nwjs_dir, target_dir);
 
     // remove useless locales
-    if (platform_os !== 'osx') { // TODO: clean locales for osx
 
-        const promises = [];
+    const promises = [];
 
-        if (!nwjs_locales) {
-            nwjs_locales = [];
-        }
+    if (!nwjs_locales) {
+        nwjs_locales = [];
+    }
+
+    if (platform_os !== 'osx') {
 
         const selected_locales = nwjs_locales.map((locale) => {
             return locale + '*';
@@ -45,7 +46,37 @@ async function create_dist(nwjs_dir, source_dir, target_dir, platform_os, nwjs_l
                     ]);
                 });
             });
+
+    } else {
+
+        const selected_locales = nwjs_locales.map((locale) => {
+            return locale.replace('-', '_') + '.lproj';
+        });
+        selected_locales.push('base.lproj'); // we keep this anyway
+
+        const lproj_paths = [
+            path.join(target_dir, 'nwjs.app', 'Contents', 'Resources'),
+            path.join(target_dir, 'nwjs.app', 'Contents', 'Frameworks', 'nwjs Framework.framework', 'Versions'),
+        ];
+
+        await filehound.create()
+            .paths(lproj_paths)
+            .directory()
+            .not()
+            .match(selected_locales)
+            .find()
+            .then((files) => {
+                files.forEach((file) => {
+                    if (file.endsWith('proj')) {
+                        promises.push(
+                            fs.remove(file)
+                        );
+                    }
+                });
+            });
     }
+
+    await Promise.all(promises);
 
     // merge source
     await fs.copy(source_dir, path.join(target_dir, 'app'));
