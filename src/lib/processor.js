@@ -69,6 +69,24 @@ async function run(params) {
         }
     }
 
+    // check hfsprogs fro osx
+    if (params.platform.os == 'osx') {
+        if (params.installer) {
+            const cmd = 'dpkg -l hfsprogs';
+            const out_bin = shell.exec(cmd, {silent: true});
+            if (out_bin.code != 0) {
+                messages.error('--> ERROR ' + cmd);
+                messages.error(out_bin);
+                abort = true;
+            } else {
+                if (!out_bin.stdout.includes('hfsprogs')) {
+                    messages.error('"hfsprogs" linux package package must be present for osx installer cross-building');
+                    abort = true;
+                }
+            }
+        }
+    }
+
     if (abort) {
         messages.error('ABORT');
         return false;
