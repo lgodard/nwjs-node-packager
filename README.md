@@ -76,6 +76,11 @@ const PLATFORMS = [
             app_name: 'Application_Name', // your application name
             app_version: '0.0.0', // application version
             osx_ico_filename: 'app.icns'
+        },
+        protect: { // Caution : only use one of these entries ssh || bin_path
+            ssh: 'user@ip', // ssh address to an osx platform
+            // OR
+            bin_path: '~/temp/toto.bin', // path to bin file
         }
     }
 ];
@@ -85,7 +90,10 @@ If your application uses Webpack, it has to be built separately.
 
 The application will download needed NW.js engines
 
-**Note : OSX installe producing `dmg` file needs `sudo`**
+OSX specific
+=======
+- OSX installer producing `dmg` file needs `sudo`
+- protect : uses `ssh` if both entries are present
 
 Credits
 ======

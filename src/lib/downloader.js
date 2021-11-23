@@ -24,7 +24,7 @@ function getNwjs(params) {
     const filename = `nwjs-v${params.nwjs_version}-${params.platform.os}-${params.platform.arch}`;
     const url = `${params.nwjs_url}/v${params.nwjs_version}/${filename}.${NWJS_BIN_EXT[params.platform.os]}`;
 
-    return getNwjsBinaries(url, filename, NWJS_BIN_EXT[params.platform.os], params.working_dir, params.force_nwjs_download);
+    return getNwjsBinaries(url, filename, params);
 }
 
 function getNwjsSdk(params) {
@@ -34,10 +34,14 @@ function getNwjsSdk(params) {
     const filename = `nwjs-sdk-v${params.nwjs_version}-${params.platform.os}-${params.platform.arch}`;
     const url = `${params.nwjs_url}/v${params.nwjs_version}/${filename}.${NWJS_BIN_EXT[params.platform.os]}`;
 
-    return getNwjsBinaries(url, filename, NWJS_BIN_EXT[params.platform.os], params.working_dir, params.force_nwjs_download);
+    return getNwjsBinaries(url, filename, params);
 }
 
-async function getNwjsBinaries(nwjs_url, filename, ext, target_dir, force) {
+async function getNwjsBinaries(nwjs_url, filename, params) {
+
+    const ext = NWJS_BIN_EXT[params.platform.os];
+    const target_dir = params.working_dir;
+    const force = params.force_nwjs_download;
 
     if (force) {
         await utils.clean(target_dir, filename);
@@ -58,6 +62,7 @@ async function getNwjsBinaries(nwjs_url, filename, ext, target_dir, force) {
     }
 
     // expand archive
+
     messages.work('* Expand archive ' + filename);
 
     const expanded_nwjs_dir = path.join(target_dir, filename);

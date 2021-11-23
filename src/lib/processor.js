@@ -114,8 +114,16 @@ async function run(params) {
         messages.title('[Protect source with V8 snapshot]');
 
         if (params.platform.os == 'osx') {
-            messages.warning('\t--> ABORT not availaible for OSX');
-
+            if (params.platform.protect) {
+                if (params.platform.protect.ssh) {
+                    const nwjs_sdk_dir = await downloader.getNwjsSdk(params);
+                    await protect.createBinOsx(params, nwjs_sdk_dir);
+                } else if (params.platform.protect.bin_path) {
+                    await protect.importBinOsx(params);
+                } else {
+                    messages.warning('\t--> ABORT missing platform parameters');
+                }
+            }
         } else {
             const nwjs_sdk_dir = await downloader.getNwjsSdk(params);
             await protect.setBin(params, nwjs_sdk_dir);

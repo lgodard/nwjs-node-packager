@@ -57,6 +57,11 @@ const PLATFORMS = [
             app_name: 'Application_Name', // your application name
             app_version: '0.0.0', // application version
             osx_ico_filename: 'app.icns'
+        },
+        protect: { // Caution : only use one of these entries ssh || bin_path
+            ssh: 'user@ip', // ssh address to an osx platform
+            // OR
+            bin_path: '~/temp/toto.bin', // path to bin file
         }
     }
 ];

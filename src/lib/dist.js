@@ -108,7 +108,7 @@ async function create_dist(nwjs_dir, params) {
         await fs.move(app_src, app_target);
 
         const root_src_path = path.join(path.resolve(params.target_dir), 'nwjs.app');
-        const root_target_path = path.join(path.resolve(params.target_dir), params.platform.installer.app_name + '.app')
+        const root_target_path = path.join(path.resolve(params.target_dir), params.platform.installer.app_name + '.app');
         await fs.move(root_src_path, root_target_path);
 
     }
