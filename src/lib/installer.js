@@ -8,7 +8,65 @@ const makensis = require('makensis');
 
 const messages = require('./messages');
 
+const util = require('util');
+const msi_packager = require('msi-packager');
+const createMsi = util.promisify(msi_packager);
+
 async function create_win(params) {
+
+    const promises = [];
+
+    if (params.platform.installer.type) {
+        if (params.platform.installer.type.includes('exe')) {
+            const p = create_nsis(params);
+            promises.push(p);
+        }
+        if (params.platform.installer.type.includes('msi')) {
+            const p = create_msi(params);
+            promises.push(p);
+        }
+    } else {
+        const p = create_nsis(params);
+        promises.push(p);
+    }
+
+    await Promise.all(promises);
+}
+
+async function create_msi(params) {
+
+    const output_filename = `Setup-${params.platform.installer.app_name}-${params.platform.installer.app_version}_${params.platform.arch}.msi`;
+
+    const msi_params = {
+        // required
+        source: params.target_dir,
+        output: path.resolve(path.join(params.output_dir), output_filename),
+        name: params.platform.installer.app_name,
+        upgradeCode: params.platform.installer.upgradeCode,
+        version: params.platform.installer.app_version,
+        manufacturer: params.platform.installer.manufacturer,
+        iconPath: path.resolve(path.join(params.target_dir), params.platform.installer.win_ico_filename),
+        executable: 'nw.exe app',
+
+        // optional
+        description: params.platform.installer.description,
+        arch: params.platform.arch,
+        localInstall: params.platform.installer.user_install
+    };
+
+    //await createMsi(msi_params);
+    return Promise.resolve().then(() => {
+        return msi_packager(msi_params, (err) => {
+            if (err) {
+                throw err;
+            }
+            console.log('Outputed to ' + msi_params.output);
+        });
+    });
+
+}
+
+async function create_nsis(params) {
 
     const nsis_template_filename = '../template/app.nsi';
 
