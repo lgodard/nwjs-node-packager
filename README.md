@@ -61,7 +61,16 @@ const PLATFORMS = [
             win_ico_filename: 'my_image.ico', // must be in source_dir
             user_install: true, // local installation - no need of admin rights for installer
             language: 'French'
-        }
+        },
+        external_files: [
+            {
+                source_filepath: '/path/to/a/file/doc.pdf',
+                target_filepath: 'sub1/sub2/my_doc.pdf' // directories will be created in package
+            },
+            {
+                source_filepath: '/path/to/a/second/file/other_doc.pdf' // file we be copied in package's root
+            },
+        ],
     },
     // Linux
     {
@@ -81,7 +90,13 @@ const PLATFORMS = [
             ssh: 'user@ip', // ssh address to an osx platform
             // OR
             bin_path: '~/temp/toto.bin', // path to bin file
-        }
+        },
+        external_files: [
+            {
+                source_filepath: '/path/to/a/file/doc.pdf',
+                target_filepath: 'sub1/sub2/my_doc.pdf' // directories will be created in package
+            }
+        ],
     }
 ];
 ```
