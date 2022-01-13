@@ -9,7 +9,7 @@
   },
   "main": "src/main.js",
   "bin": {
-    "nwjs_package": "./bin/nwjs_package.sh"
+    "nwjs_node_packager": "./bin/nwjs_node_packager.sh"
   },
   "scripts": {
     "start": "node src/start.js",
