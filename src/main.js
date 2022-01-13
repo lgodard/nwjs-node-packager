@@ -1,12 +1,10 @@
 'use strict';
 const path = require('path');
-const yargs = require('yargs');
-const fs = require('fs-extra');
 
 const processor = require('./lib/processor');
 const messages = require('./lib/messages');
 
-async function go(params) {
+async function createPackage(params) {
     for (const platform of params.PLATFORMS) {
 
         const options = {...params.COMMON};
@@ -23,28 +21,6 @@ async function go(params) {
     }
 }
 
-(async() => {
-
-    const args = yargs
-        .option('params', {
-            type: 'string',
-            describe: 'js file containing parameters for the packaging',
-        })
-        .argv;
-
-    let params_path = args.params;
-    if (!params_path) {
-        params_path = './params.example.js';
-        messages.warning('Using default parameter file ' + path.resolve(params_path));
-    }
-
-    if (!await fs.pathExists(path.resolve(params_path))) {
-        messages.error('Parameter file NOT FOUND ' + path.resolve(params_path));
-        return;
-    }
-
-    const params = require(path.resolve(params_path));
-
-    await go(params);
-    messages.work('\n');
-})();
+module.exports = {
+    createPackage
+};

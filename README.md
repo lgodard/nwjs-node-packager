@@ -6,10 +6,12 @@ Running on Linux, it targets Linux, Windows and OSX platforms.
 
 It can optionally replace the js file with a V8 snapshot to avoid directly reading the source code.
 
-Usage
+CLI Usage
 ====
 ```shell
 $ npm start -- --params ./my-builder-params.js
+
+$ npx nwjs_package --params ./my-builder-params.js
 ```
 
 If no file for `--params` is given, the default configuration from `params.example.js` will be used.

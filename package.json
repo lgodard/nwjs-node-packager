@@ -7,8 +7,12 @@
   "engines": {
     "node": ">=12.16"
   },
+  "main": "src/main.js",
+  "bin": {
+    "nwjs_package": "./bin/nwjs_package.sh"
+  },
   "scripts": {
-    "start": "node src/main.js",
+    "start": "node src/start.js",
     "lint": "eslint .",
     "lint:fix": "eslint --fix ."
   },
