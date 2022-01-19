@@ -11,6 +11,8 @@ const messages = require('./messages');
 const util = require('util');
 const msi_packager = require('msi-packager');
 const createMsi = util.promisify(msi_packager);
+const fileHound = require('filehound');
+const filehound = require('filehound');
 
 async function create_win(params) {
 
@@ -33,6 +35,7 @@ async function create_win(params) {
     await Promise.all(promises);
 }
 
+
 async function create_msi(params) {
 
     const output_filename = `Setup-${params.platform.installer.app_name}-${params.platform.installer.app_version}_${params.platform.arch}.msi`;
@@ -54,16 +57,121 @@ async function create_msi(params) {
         localInstall: params.platform.installer.user_install
     };
 
-    //await createMsi(msi_params);
-    return Promise.resolve().then(() => {
-        return msi_packager(msi_params, (err) => {
-            if (err) {
-                throw err;
-            }
-            console.log('Outputed to ' + msi_params.output);
-        });
+    const wxs = await explore_dir(params.target_dir, params.target_dir);
+
+    let features = '';
+    wxs.file_ids.forEach((file_id) => {
+        features += `
+        <ComponentRef Id="${file_id}"/>
+        `;
     });
 
+    const wixl_template_filename = '../template/app.wxs';
+
+    // loads nsis template
+    const wixl_template = await fs.readFile(path.resolve(path.join(__dirname, wixl_template_filename)), 'utf8');
+
+    // creates nsis
+    let regexp = RegExp(/NWJS_APP_REPLACE_DIRECTORY_CONTENT/g);
+    let wixl = wixl_template.replace(regexp, wxs.content);
+
+    regexp = RegExp(/NWJS_APP_REPLACE_FEATURE/g);
+    wixl = wixl.replace(regexp, features);
+
+    const iconPath = path.resolve(path.join(params.target_dir, 'app', params.platform.installer.win_ico_filename));
+    regexp = RegExp(/NWJS_APP_REPLACE_ICON/g);
+    wixl = wixl.replace(regexp, iconPath);
+
+    regexp = RegExp(/NWJS_APP_REPLACE_VERSION/g);
+    wixl = wixl.replace(regexp, params.platform.installer.app_version);
+
+    regexp = RegExp(/NWJS_APP_REPLACE_MANUFACTURER/g);
+    wixl = wixl.replace(regexp, params.platform.installer.manufacturer);
+
+    regexp = RegExp(/NWJS_APP_REPLACE_NAME/g);
+    wixl = wixl.replace(regexp, params.platform.installer.app_name);
+
+    regexp = RegExp(/NWJS_APP_REPLACE_LANGUAGE/g);
+    wixl = wixl.replace(regexp, params.platform.installer.msi_language);
+
+    regexp = RegExp(/NWJS_APP_REPLACE_SCOPE/g);
+    wixl = wixl.replace(regexp, params.platform.installer.user_install ? 'perUser' : 'perMachine');
+
+    regexp = RegExp(/NWJS_APP_REPLACE_INSTALLFOLDER/g);
+    wixl = wixl.replace(regexp, params.platform.installer.user_install ? 'LocalAppDataFolder' : 'ProgramFilesFolder');
+
+
+    // save wixl
+    const wixl_filename = `${params.platform.os}-${params.platform.arch}.wixl`;
+    const wixl_path = path.resolve(path.join(params.output_dir), wixl_filename);
+    await fs.writeFile(wixl_path, wixl, 'utf8');
+
+    // compile wixl
+    messages.work('* Create installer (msi)');
+
+    const output_msi = path.resolve(path.join(params.output_dir), output_filename);
+    const cmd = `wixl -o ${output_msi} ${wixl_path}`;
+    const out_bin = shell.exec(cmd, {silent: true});
+    if (out_bin.code != 0) {
+        messages.error('--> ERROR ' + cmd);
+        messages.error(out_bin);
+    } else {
+        messages.info('==> Installer available at ' + output_msi);
+    }
+
+}
+
+async function explore_dir(dir, base_dir) {
+
+    const dir_id = dir.replace(base_dir, '').replace(/\//g, '_');
+
+    const result = {};
+    result.content = '';
+    result.file_ids = [];
+
+    // files
+    await filehound.create()
+        .path(dir)
+        .depth(0)
+        .find()
+        .each((file) => {
+            const file_name = path.basename(file);
+            const file_id = dir_id ? dir_id + '_' + file_name : file_name;
+            result.file_ids.push(file_id);
+            result.content += `
+                <Component Id="${file_id}" Guid="*">
+                    <File Id="${file_id}" Source="${file}" Name="${file_name}"/>
+                </Component>\n`;
+        });
+
+    // sub directories
+    const promises = [];
+    await filehound.create()
+        .path(dir)
+        .directory()
+        .depth(1)
+        .find()
+        .then((subdirs) => {
+            subdirs.forEach((subdir) => {
+                const p = Promise.resolve().then(() => {
+                    return explore_dir(subdir, base_dir);
+                }).then((sub_result) => {
+
+                    const sub_dir_id = subdir.replace(base_dir + '/', '').replace(/\//g, '_');
+                    const sub_dir_name = path.basename(subdir);
+
+                    result.content += `<Directory Id="${sub_dir_id}" Name="${sub_dir_name}">\n`
+                                        + sub_result.content + '</Directory>\n';
+
+                    result.file_ids.push(...sub_result.file_ids);
+                });
+                promises.push(p);
+            });
+        });
+
+    await Promise.all(promises);
+
+    return result;
 }
 
 async function create_nsis(params) {
@@ -118,7 +226,7 @@ async function create_nsis(params) {
     await fs.writeFile(nsis_path, nsis, 'utf8');
 
     // compile nsis
-    messages.work('* Create installer');
+    messages.work('* Create installer (exe)');
     const nsis_output = await makensis.compile(nsis_path);
     if (nsis_output.status != 0) {
         messages.error('nsis_output ' + JSON.stringify(nsis_output));
