@@ -8,10 +8,6 @@ const makensis = require('makensis');
 
 const messages = require('./messages');
 
-const util = require('util');
-const msi_packager = require('msi-packager');
-const createMsi = util.promisify(msi_packager);
-const fileHound = require('filehound');
 const filehound = require('filehound');
 
 async function create_win(params) {
@@ -39,23 +35,6 @@ async function create_win(params) {
 async function create_msi(params) {
 
     const output_filename = `Setup-${params.platform.installer.app_name}-${params.platform.installer.app_version}_${params.platform.arch}.msi`;
-
-    const msi_params = {
-        // required
-        source: params.target_dir,
-        output: path.resolve(path.join(params.output_dir), output_filename),
-        name: params.platform.installer.app_name,
-        upgradeCode: params.platform.installer.upgradeCode,
-        version: params.platform.installer.app_version,
-        manufacturer: params.platform.installer.manufacturer,
-        iconPath: path.resolve(path.join(params.target_dir), params.platform.installer.win_ico_filename),
-        executable: 'nw.exe app',
-
-        // optional
-        description: params.platform.installer.description,
-        arch: params.platform.arch,
-        localInstall: params.platform.installer.user_install
-    };
 
     const wxs = await explore_dir(params.target_dir, params.target_dir);
 

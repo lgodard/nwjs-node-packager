@@ -54,18 +54,47 @@ async function run(params) {
     // check nsis linux package for windows installer cross-building
     if (params.platform.os == 'win') {
         if (params.installer) {
-            const cmd = 'dpkg -l nsis';
-            const out_bin = shell.exec(cmd, {silent: true});
-            if (out_bin.code != 0) {
-                messages.error('--> ERROR ' + cmd);
-                messages.error(out_bin);
-                abort = true;
-            } else {
-                if (!out_bin.stdout.includes('nsis')) {
-                    messages.error('"nsis" linux package package must be present for windows installer cross-building');
+
+            let check_nsis = false;
+            let check_wixl = false;
+
+            if (!params.installer.type || params.installer.type.includes('exe')) {
+                check_nsis = true;
+            }
+            if (params.installer.type || params.installer.type.includes('msi')) {
+                check_wixl = true;
+            }
+
+            if (check_nsis) {
+                const cmd = 'dpkg -l nsis';
+                const out_bin = shell.exec(cmd, {silent: true});
+                if (out_bin.code != 0) {
+                    messages.error('--> ERROR ' + cmd);
+                    messages.error(out_bin);
                     abort = true;
+                } else {
+                    if (!out_bin.stdout.includes('nsis')) {
+                        messages.error('"nsis" linux package must be present for windows installer cross-building');
+                        abort = true;
+                    }
                 }
             }
+
+            if (check_wixl) {
+                const cmd = 'dpkg -l wixl';
+                const out_bin = shell.exec(cmd, {silent: true});
+                if (out_bin.code != 0) {
+                    messages.error('--> ERROR ' + cmd);
+                    messages.error(out_bin);
+                    abort = true;
+                } else {
+                    if (!out_bin.stdout.includes('nsis')) {
+                        messages.error('"wixl" linux package must be present for MSI windows installer cross-building');
+                        abort = true;
+                    }
+                }
+            }
+
         }
     }
 
@@ -80,7 +109,7 @@ async function run(params) {
                 abort = true;
             } else {
                 if (!out_bin.stdout.includes('hfsprogs')) {
-                    messages.error('"hfsprogs" linux package package must be present for osx installer cross-building');
+                    messages.error('"hfsprogs" linux package must be present for osx installer cross-building');
                     abort = true;
                 }
             }

@@ -90,6 +90,12 @@ If your application uses Webpack, it has to be built separately.
 
 The application will download needed NW.js engines
 
+Windows Installer requirements
+=======
+- default installer `exe` needs `nsis` linux package
+- `msi` installer needs `wixl` linux package
+
+
 OSX specific
 =======
 - OSX installer producing `dmg` file needs `sudo`
