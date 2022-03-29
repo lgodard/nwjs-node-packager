@@ -56,13 +56,19 @@ const PLATFORMS = [
         arch: 'x64', // can be ia32
         // creates an NSIS installer
         installer: {
+            type: ['exe', 'msi'], // each targeted windows installer
             app_name: 'Application_Name', // your application name
             app_version: '0.0.0', // application version
             description: 'Application description for the installer',
             licence: 'MIT',
             win_ico_filename: 'my_image.ico', // must be in source_dir
             user_install: true, // local installation - no need of admin rights for installer
-            language: 'French'
+            language: 'French',
+            
+            // msi required
+            upgradeCode: 'My-Upgrade-Code',
+            manufacturer: 'My-manufacturer-Id',
+            msi_language: 1036 // 1033 english, 1036 french
         },
         external_files: [
             {
