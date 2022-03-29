@@ -23,7 +23,7 @@ async function create_dist(nwjs_dir, params) {
 
     // remove useless locales
 
-    const promises = [];
+    let promises = [];
 
     if (!params.nwjs_locales) {
         params.nwjs_locales = [];
@@ -82,6 +82,23 @@ async function create_dist(nwjs_dir, params) {
     // merge source
     const target_app = path.join(path.resolve(params.target_dir), 'app');
     await fs.copy(params.source_dir, target_app);
+
+    // add external files
+    promises = [];
+    if (params.platform.external_files) {
+        params.platform.external_files.forEach((external) => {
+            const source = external.source_filepath;
+            const filename = path.basename(source);
+            let target;
+            if (!external.target_filepath || external.target_filepath.trim().length === 0) {
+                target = path.join(path.resolve(params.target_dir), filename);
+            } else {
+                target = path.join(path.resolve(params.target_dir), external.target_filepath);
+            }
+            promises.push(fs.copy(source, target));
+        });
+        await Promise.all(promises);
+    }
 
     if (params.platform.os == 'osx') {
 
