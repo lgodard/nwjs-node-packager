@@ -35,13 +35,20 @@ const PLATFORMS = [
         arch: 'x64', // can bie ia32
         // creates a nsis installer
         installer: {
+            type: ['exe', 'msi'],
             app_name: 'Application_Name', // your application name
             app_version: '0.0.0', // application version
             description: 'Application description for the installer',
             licence: 'MIT',
             win_ico_filename: '', // must be in source_dir
             user_install: true, // local installation - no need of admin rights for installer
-            language: 'French'
+            language: 'French',
+            // msi
+            // required
+            wixl_relative_path: true, // needed setting since debian 12 & wixl 0.101
+            upgradeCode: 'an_upgrade_code',
+            manufacturer: 'Company name',
+            msi_language: 1036 // 1033 english, 1036 french
         },
         external_files: [
             {
