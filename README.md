@@ -66,6 +66,7 @@ const PLATFORMS = [
             language: 'French',
             
             // msi required
+            wixl_relative_path: true, // needed setting since debian 12 & wixl 0.101
             upgradeCode: 'My-Upgrade-Code',
             manufacturer: 'My-manufacturer-Id',
             msi_language: 1036 // 1033 english, 1036 french
@@ -117,6 +118,7 @@ Windows Installer requirements
 =======
 - default installer `exe` needs `nsis` linux package
 - `msi` installer needs `wixl` linux package
+- `msi` : Since `debian 12`, with `wixl 0.101`, the `File` source paths in generated `.wixl` file need to be relative. The parameter `wixl_relative_path` allow this.
 
 
 OSX specific
