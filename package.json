@@ -25,7 +25,7 @@
     "makensis": "0.21.2",
     "progress": "2.0.3",
     "shelljs": "0.8.4",
-    "yargs": "16.0.3"
+    "yargs": "17.7.2"
   },
   "devDependencies": {
     "eslint": "8.53.0"
