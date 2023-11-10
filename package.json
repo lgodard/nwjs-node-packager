@@ -24,7 +24,7 @@
     "fs-extra": "11.1.1",
     "makensis": "0.21.2",
     "progress": "2.0.3",
-    "shelljs": "0.8.4",
+    "shelljs": "0.8.5",
     "yargs": "17.7.2"
   },
   "devDependencies": {
