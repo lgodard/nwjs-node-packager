@@ -1,6 +1,7 @@
 'use strict';
 const path = require('path');
 const os = require('os');
+const process = require('process')
 
 const shell = require('shelljs');
 const fs = require('fs-extra');
@@ -35,7 +36,7 @@ async function create_msi(params) {
 
     const output_filename = `Setup-${params.platform.installer.app_name}-${params.platform.installer.app_version}_${params.platform.arch}.msi`;
 
-    const wxs = await explore_dir(params.target_dir, params.target_dir);
+    const wxs = await explore_dir(params.target_dir, params.target_dir, params.platform.installer.wixl_relative_path);
 
     let features = '';
     wxs.file_ids.forEach((file_id) => {
@@ -58,7 +59,7 @@ async function create_msi(params) {
 
     const iconPath = path.resolve(path.join(params.target_dir, 'app', params.platform.installer.win_ico_filename));
     regexp = RegExp(/NWJS_APP_REPLACE_ICON/g);
-    wixl = wixl.replace(regexp, iconPath);
+    wixl = wixl.replace(regexp, params.platform.installer.wixl_relative_path ? iconPath.replace(process.cwd(), '.') : iconPath);
 
     regexp = RegExp(/NWJS_APP_REPLACE_VERSION/g);
     wixl = wixl.replace(regexp, params.platform.installer.app_version);
@@ -99,7 +100,7 @@ async function create_msi(params) {
 
 }
 
-async function explore_dir(dir, base_dir) {
+async function explore_dir(dir, base_dir, wixl_relative_path) {
 
     const dir_id = dir.replace(base_dir, '').replace(/\//g, '_');
 
@@ -116,9 +117,17 @@ async function explore_dir(dir, base_dir) {
             const file_name = path.basename(file);
             const file_id = dir_id ? dir_id + '_' + file_name : file_name;
             result.file_ids.push(file_id);
+
+            let source_file;
+            if (wixl_relative_path) {
+                source_file = file.replace(process.cwd(), '.');
+            } else {
+                source_file = file;
+            }
+
             result.content += `
                 <Component Id="${file_id}" Guid="*">
-                    <File Id="${file_id}" Source="${file}" Name="${file_name}"/>
+                    <File Id="${file_id}" Source="${source_file}" Name="${file_name}"/>
                 </Component>\n`;
         });
 
@@ -132,7 +141,7 @@ async function explore_dir(dir, base_dir) {
         .then((subdirs) => {
             subdirs.forEach((subdir) => {
                 const p = Promise.resolve().then(() => {
-                    return explore_dir(subdir, base_dir);
+                    return explore_dir(subdir, base_dir, wixl_relative_path);
                 }).then((sub_result) => {
 
                     const sub_dir_id = subdir.replace(base_dir + '/', '').replace(/\//g, '_');
