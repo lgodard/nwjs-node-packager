@@ -21,7 +21,7 @@
     "chalk": "4.1.0",
     "decompress": "4.2.1",
     "filehound": "1.17.6",
-    "fs-extra": "9.0.1",
+    "fs-extra": "11.1.1",
     "makensis": "0.21.2",
     "progress": "2.0.3",
     "shelljs": "0.8.4",
