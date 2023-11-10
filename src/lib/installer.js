@@ -4,7 +4,6 @@ const os = require('os');
 
 const shell = require('shelljs');
 const fs = require('fs-extra');
-const makensis = require('makensis');
 
 const messages = require('./messages');
 
@@ -206,6 +205,7 @@ async function create_nsis(params) {
 
     // compile nsis
     messages.work('* Create installer (exe)');
+    const makensis = await import('makensis'); // dynamic import as makensis becomes an ES6 module
     const nsis_output = await makensis.compile(nsis_path);
     if (nsis_output.status != 0) {
         messages.error('nsis_output ' + JSON.stringify(nsis_output));

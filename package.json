@@ -22,7 +22,7 @@
     "decompress": "4.2.1",
     "filehound": "1.17.6",
     "fs-extra": "11.1.1",
-    "makensis": "0.21.2",
+    "makensis": "2.0.8",
     "progress": "2.0.3",
     "shelljs": "0.8.5",
     "yargs": "17.7.2"
