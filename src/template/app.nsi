@@ -47,9 +47,9 @@ SectionEnd
 
 Section -FinishSection
 
-	WriteRegStr NWJS_APP_REPLACE_REGISTRY "Software\${APPNAME}" "" "$INSTDIR"
-	WriteRegStr NWJS_APP_REPLACE_REGISTRY "Software\Microsoft\Windows\CurrentVersion\Uninstall\${APPNAME}" "DisplayName" "${APPNAME}"
-	WriteRegStr NWJS_APP_REPLACE_REGISTRY "Software\Microsoft\Windows\CurrentVersion\Uninstall\${APPNAME}" "UninstallString" "$INSTDIR\uninstall.exe"
+	WriteRegStr NWJS_APP_REPLACE_REGISTRY "SOFTWARE\${APPNAME}" "" "$INSTDIR"
+	WriteRegStr NWJS_APP_REPLACE_REGISTRY "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\${APPNAME}" "DisplayName" "${APPNAME}"
+	WriteRegStr NWJS_APP_REPLACE_REGISTRY "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\${APPNAME}" "UninstallString" '"$INSTDIR\uninstall.exe"'
 	WriteUninstaller "$INSTDIR\uninstall.exe"
 
 SectionEnd
