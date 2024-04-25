@@ -43,6 +43,10 @@ const PLATFORMS = [
             win_ico_filename: '', // must be in source_dir
             user_install: true, // local installation - no need of admin rights for installer
             language: 'French',
+            // check running (exe)
+            detect_running: true,
+            main_window_title: 'MyApp',
+            already_running_message: 'MyApp is running. Please close it and retry !',
             // msi
             // required
             wixl_relative_path: true, // needed setting since debian 12 & wixl 0.101

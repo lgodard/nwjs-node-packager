@@ -64,6 +64,11 @@ const PLATFORMS = [
             win_ico_filename: 'my_image.ico', // must be in source_dir
             user_install: true, // local installation - no need of admin rights for installer
             language: 'French',
+
+            // check running (exe)
+            detect_running: true, // detect running window & abort
+            main_window_title: 'MyApp', // window name to be detected
+            already_running_message: 'MyApp is running. Please close it and retry !', // displayed message if aborting
             
             // msi required
             wixl_relative_path: true, // needed setting since debian 12 & wixl 0.101

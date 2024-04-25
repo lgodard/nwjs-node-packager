@@ -171,6 +171,16 @@ async function create_nsis(params) {
     let regexp = RegExp(/NWJS_APP_REPLACE_APPNAME/g);
     let nsis = nsis_template.replace(regexp, params.platform.installer.app_name);
 
+    // check for running
+    regexp = RegExp(/NWJS_APP_DETECT_RUNNING/g);
+    nsis = nsis.replace(regexp, params.platform.installer.detect_running ? 1 : 0);
+    if (params.platform.installer.detect_running) {
+        regexp = RegExp(/NWJS_APP_MAIN_WINDOW_TITLE/g);
+        nsis = nsis.replace(regexp, params.platform.installer.main_window_title);
+        regexp = RegExp(/NWJS_APP_ALREADY_RUNNING_MESSAGE/g);
+        nsis = nsis.replace(regexp, params.platform.installer.already_running_message);
+    }
+
     regexp = RegExp(/NWJS_APP_REPLACE_VERSION/g);
     nsis = nsis.replace(regexp, params.platform.installer.app_version);
 

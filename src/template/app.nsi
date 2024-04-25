@@ -9,6 +9,26 @@ InstallDir "NWJS_APP_REPLACE_TARGET_WIN_DIR\${APPNAME}"
 InstallDirRegKey NWJS_APP_REPLACE_REGISTRY "Software\${APPNAME}" ""
 OutFile "NWJS_APP_REPLACE_EXE_NAME"
 
+;;; Detect running
+;;; https://nsis.sourceforge.io/Check_whether_your_application_is_running#Using_a_window_class_or_title
+Section DetectRunning
+
+    !define DETECT_RUNNING "NWJS_APP_DETECT_RUNNING"
+
+    StrCmp DETECT_RUNNING 0 notRunning
+
+        !define MAIN_WINDOW_TITLE "NWJS_APP_MAIN_WINDOW_TITLE"
+        !define ALREADY_RUNNING_MESSAGE "NWJS_APP_ALREADY_RUNNING_MESSAGE"
+
+        FindWindow $0 "" "${MAIN_WINDOW_TITLE}"
+        StrCmp $0 0 notRunning
+                MessageBox MB_OK|MB_ICONEXCLAMATION "${ALREADY_RUNNING_MESSAGE}" /SD IDOK
+                Abort
+
+    notRunning:
+
+SectionEnd
+
 ;;; Modern interface settings
 !include "MUI.nsh"
 !define MUI_ABORTWARNING
