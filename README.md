@@ -4,6 +4,8 @@ A tool to build distributable packages of an NW.js application.
 
 Running on Linux, it targets Linux, Windows and OSX platforms.
 
+It uses few standard commands and `unzip` command line. Main actions are full javascript
+
 It can optionally replace the js file with a V8 snapshot to avoid directly reading the source code.
 
 CLI Usage
@@ -124,7 +126,7 @@ Windows Installer requirements
 - default installer `exe` needs `nsis` linux package
 - `msi` installer needs `wixl` linux package
 - `msi` : Since `debian 12`, with `wixl 0.101`, the `File` source paths in generated `.wixl` file need to be relative. The parameter `wixl_relative_path` allow this.
-
+- protect : Since `nwjs 0.69.0`, the sdk file `nwjc` needs `wine 9.0` to run. So be carefull as `debian 12` provides `wine 8.4` but one can use up-to-date `winehq` debian packages - see https://wiki.winehq.org/Debian
 
 OSX specific
 =======

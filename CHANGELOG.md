@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.7.1 (2024-05-15)
+
+- (internal) refactor decompress. now needs `unzip` package
+- (doc) wine 9.0 needed for nwjc for nwjs >= 0.69 
+
 ## 1.7.0 (2024-04-25)
 
 - nsi : check opened window
