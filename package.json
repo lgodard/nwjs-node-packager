@@ -19,7 +19,6 @@
   "dependencies": {
     "axios": "1.6.7",
     "chalk": "4.1.0",
-    "decompress": "4.2.1",
     "filehound": "1.17.6",
     "fs-extra": "11.2.0",
     "makensis": "2.0.8",

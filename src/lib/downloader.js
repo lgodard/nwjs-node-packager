@@ -4,7 +4,6 @@ const path = require('path');
 
 const axios = require('axios');
 const fs = require('fs-extra');
-const decompress = require('decompress');
 const ProgressBar = require('progress');
 
 const utils = require('./utils');
@@ -68,7 +67,7 @@ async function getNwjsBinaries(nwjs_url, filename, params) {
     const expanded_nwjs_dir = path.join(target_dir, filename);
     const expanded_target_exists = await fs.pathExists(expanded_nwjs_dir);
     if (!expanded_target_exists) {
-        await decompress(target_filename, target_dir);
+        await utils.unzip(path.resolve(target_filename), path.resolve(target_dir));
         messages.work('\t--> done');
     } else {
         messages.work('\t--> skip existing');
