@@ -11,6 +11,8 @@ const filehound = require('filehound');
 
 async function create_win(params) {
 
+    setAppName(params);
+
     const promises = [];
 
     if (params.platform.installer.type) {
@@ -234,6 +236,8 @@ async function create_nsis(params) {
 
 async function create_osx(params) {
 
+    setAppName(params);
+
     const script_template_filename = '../template/create_dmg.sh';
 
     // loads script template
@@ -280,6 +284,21 @@ async function create_osx(params) {
         messages.error('\n--> ABORT dmg script error \n' + JSON.stringify(result));
     } else {
         messages.info('\n==> Installer available at ' + path.resolve(path.join(params.output_dir), dmg_name));
+    }
+}
+
+function setAppName(params) {
+
+    // if no app_name
+    // takes the name of the deployed app (through nwjs package.json)
+
+    if (!params.platform.installer.app_name) {
+        // read dist package.json
+        const package_path = path.resolve(path.join(params.target_dir, 'app', 'package.json'));
+        const nwjsConfig = JSON.parse(fs.readFileSync(package_path).toString());
+
+        // set app_name
+        params.platform.installer.app_name = nwjsConfig.name;
     }
 }
 

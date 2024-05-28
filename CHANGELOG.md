@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.8.0 (2024-05-28)
+
+- (Installer) If no `app_name` given, use the `name` in `package.json` of the deployed app
+
 ## 1.7.1 (2024-05-15)
 
 - (internal) refactor decompress. now needs `unzip` package

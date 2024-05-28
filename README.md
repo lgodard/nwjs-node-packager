@@ -59,7 +59,7 @@ const PLATFORMS = [
         // creates an NSIS installer
         installer: {
             type: ['exe', 'msi'], // each targeted windows installer
-            app_name: 'Application_Name', // your application name
+            app_name: 'Application_Name', // your application name - if not set, uses the app package.json
             app_version: '0.0.0', // application version
             description: 'Application description for the installer',
             licence: 'MIT',
@@ -98,7 +98,7 @@ const PLATFORMS = [
         os: 'osx',
         arch: 'x64',
         installer: { // needs sudo
-            app_name: 'Application_Name', // your application name
+            app_name: 'Application_Name', // your application name - if not set, uses the app package.json
             app_version: '0.0.0', // application version
             osx_ico_filename: 'app.icns'
         },
@@ -120,6 +120,8 @@ const PLATFORMS = [
 If your application uses Webpack, it has to be built separately.
 
 The application will download needed NW.js engines
+
+If no `app_name` given for installer, it uses the `name` key of the `package.json` of the deployed app (in `source_dir`)
 
 Windows Installer requirements
 =======
