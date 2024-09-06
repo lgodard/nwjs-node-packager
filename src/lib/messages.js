@@ -2,8 +2,8 @@
 
 const chalk = require('chalk');
 
-const chalk_error = chalk.red;
-const chalk_warning = chalk.yellow;
+const chalk_error = chalk.redBright;
+const chalk_warning = chalk.yellowBright;
 const chalk_info = chalk.green;
 const chalk_infoTitle = chalk.blueBright;
 const chalk_work = chalk.white;
@@ -30,7 +30,7 @@ function work(message) {
     displayMessage(message, chalk_work);
 }
 function section(message) {
-    const section_message = '\n***********\n' + message + '\n***********';
+    const section_message = '\n*******************\n' + message + '\n*******************';
     displayMessage(section_message, chalk_section);
 }
 
