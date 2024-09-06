@@ -256,7 +256,7 @@ async function create_osx(params) {
     regexp = RegExp(/NWJS_DMG_REPLACE_SOURCE_SIZE/g);
     script = script.replace(regexp, size);
 
-    const dmg_name = `${params.platform.installer.app_name}-${params.platform.installer.app_version}.dmg`;
+    const dmg_name = `${params.platform.installer.app_name}-${params.platform.installer.app_version}-OSX-${params.platform.arch}.dmg`;
     regexp = RegExp(/NWJS_DMG_REPLACE_FILENAME/g);
     script = script.replace(regexp, dmg_name);
 
