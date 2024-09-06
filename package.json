@@ -17,8 +17,8 @@
     "lint:fix": "eslint --fix ."
   },
   "dependencies": {
-    "axios": "1.6.7",
-    "chalk": "4.1.0",
+    "axios": "1.7.7",
+    "chalk": "4.1.2",
     "filehound": "1.17.6",
     "fs-extra": "11.2.0",
     "makensis": "2.0.8",
@@ -27,6 +27,6 @@
     "yargs": "17.7.2"
   },
   "devDependencies": {
-    "eslint": "8.56.0"
+    "eslint": "9.9.1"
   }
 }
