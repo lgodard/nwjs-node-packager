@@ -40,13 +40,12 @@ async function setBin(params, nwjs_sdk_dir) {
     messages.work('* Change script call');
 
     const html_file = path.join(params.target_dir, 'app', params.built_html);
-
-    const initial_loading_script = `<script type="text/javascript" src="${params.built_script}"></script>`;
-    const html_script_bin_loader = `<script>require('nw.gui').Window.get().evalNWBin(null, './${params.built_script}.bin');</script>`;
-
     const html_content = await fs.readFile(html_file, 'utf8');
-    let new_content = html_content.replace(initial_loading_script, '');
 
+    const regexp = new RegExp(`<script.*src="${params.built_script}".*><\/script>`, 'g');
+    let new_content = html_content.replace(regexp, '');
+
+    const html_script_bin_loader = `<script>require('nw.gui').Window.get().evalNWBin(null, './${params.built_script}.bin');</script>`;
     if (!new_content.includes(html_script_bin_loader)) {
         new_content = new_content.replace('</body>', html_script_bin_loader + '</body>');
     }
