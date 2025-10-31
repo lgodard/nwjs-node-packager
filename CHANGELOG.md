@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.8.3 (2025-10-31)
+
+- security - update dependencies
+
 ## 1.8.2 (2025-10-31)
 
 - windows nsi - clean target /app directory before installing
