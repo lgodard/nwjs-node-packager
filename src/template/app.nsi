@@ -51,6 +51,9 @@ SectionEnd
 
 Section "${APPNAME}" Section1
 
+    ;;; Delete existing app
+    RMDir /r $INSTDIR\app
+
 	;;; Set Section properties
 	SetOverwrite on
 
